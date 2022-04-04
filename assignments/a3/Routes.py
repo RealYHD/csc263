@@ -18,9 +18,10 @@ def parse_input_list(filepath) -> tuple[list[list[int]], dict[str, int]]:
     lines_no_header = []
 
     header_ind = 0
-    for line in file:
+    for line in file:  # Generate the row headers first for substitution later.
         if len(line) > 0 and not line.isspace():
             split = line.split(":")
+            # Indice for substitution later.
             headers[split[0].strip()] = header_ind
             header_ind += 1
             # No case where there is no adjacent vertex (connected graph)
@@ -28,53 +29,27 @@ def parse_input_list(filepath) -> tuple[list[list[int]], dict[str, int]]:
     file.close()
 
     for line in lines_no_header:
+        # Ignore commas. They are for readability purposes only.
         line = line.replace(",", " ")
         segmented = line.split(" ")
         row_items = []
         for segment in segmented:
             if not segment.isspace() and len(segment) > 0:
+                # Perform the substitution of labels with their indicies.
                 row_items.append(headers[segment.strip().replace("\n", "")])
+        # In case there was a line that was complete white-space.
         if len(row_items) > 0:
             res.append(row_items)
     return res, headers
 
 
-def parse_input_mat(filepath) -> tuple[list[list[int]], list[str]]:
-    header = []
-    mat = []
-    file = open(filepath)
-    colHeaderComplete = False
-    num_verts = None
-    for line in file:
-        if (not line.startswith("#") and not line.isspace()):
-            segments = line.split()
-            row = []
-            for segment in segments:
-                if (segment.startswith("#")):
-                    break  # the rest of the line is a comment.
-                if (colHeaderComplete):
-                    if segment.isnumeric():
-                        row.append(int(segment))
-                else:
-                    row.append(segment.lower())
-            if not colHeaderComplete:
-                header = row
-                colHeaderComplete = True
-            else:
-                mat.append(row)
-            if not num_verts:
-                num_verts = len(row)
-            elif num_verts != len(row):
-                return None
-    file.close()
-    return mat, header
-
-
+# Generates an array of length n where n is the number of vertices in the graph.
 def gen_city_mask(headers: dict) -> list:
     keys = headers.keys()
-    res = [0] * len(keys)
+    res = [0] * len(keys)  # Prepare the array of length n
     for key in keys:
-        if "*" in key:
+        if "*" in key:  # Use asterisk as notation for cities.
+            # Set the index at the respective vertices to 1 if they are cities.
             res[headers[key]] = 1
     return res
 
@@ -85,16 +60,20 @@ def count_routes_1(adj_lst: list[list[int]], length: int, start, end) -> int:
 
 
 def count_routes_visit_1(length: int, adj: list[list[int]], path: list[int], curr_node: int, end_node: int, ends_found: int):
-    if curr_node == end_node:
+    if curr_node == end_node:  # If current node is the end port, count it.
         return 1 + ends_found
+    # Iterate over the connected vertices of the current vertex.
     for dest_node in adj[curr_node]:
+        # Check to see if this node has not been traversed on the path to the current node.
         if path[dest_node] < 1:
             # enter node
+            # Indicate that the current node was used to traverse to the next node.
             path[curr_node] += 1
             ends_found = count_routes_visit_1(length, adj, path,
-                                              dest_node, end_node, ends_found)
+                                              dest_node, end_node, ends_found)  # Traverse to next node.
+            # After returning, the current node is no longer an ancestor of the current node.
             path[curr_node] -= 1
-    return 0 + ends_found
+    return 0 + ends_found  # Dead end, no way to get to the end port here.
 
 
 def count_routes_2(adj_lst: list[list[int]], length: int, start, end, city_mask: list) -> int:
@@ -106,6 +85,7 @@ def count_routes_visit_2(length: int, adj: list[list[int]], path: list[int], cur
     if curr_node == end_node:
         return 1 + ends_found
     for dest_node in adj[curr_node]:
+        # Make exceptions to this check for city nodes.
         if (path[dest_node] < 1 or city_mask[dest_node] > 0):
             # enter node
             path[curr_node] += 1
@@ -125,16 +105,18 @@ def count_routes_visit_3(length: int, adj: list[list[int]], path: list[int], cur
         return 1 + ends_found
     for dest_node in adj[curr_node]:
         if dest_node != start_node:
+            # Check the ticket hasn't been used yet. If so, then it may be used.
             if (path[dest_node] < 1 or city_mask[dest_node] > 0 or not ticket_used):
                 handed_ticket = False
                 if path[dest_node] > 0 and city_mask[dest_node] < 1:
                     ticket_used = True
+                    # To indicate this was the call in the stack that used the ticket.
                     handed_ticket = True
                 # enter node
                 path[curr_node] += 1
                 ends_found = count_routes_visit_3(length, adj, path,
                                                   dest_node, start_node, end_node, ends_found, city_mask, ticket_used)
-                if handed_ticket:
+                if handed_ticket:  # Check if we've returned to the stack at which we used our ticket, if so, that means we're done the route that used the ticket.
                     handed_ticket = False
                     ticket_used = False
                 path[curr_node] -= 1
