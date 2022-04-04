@@ -1,0 +1,12 @@
+# We will use an adjacency matrix where cities are denoted with an asterisk beside the node name and otherwise, we will assume it's a village.
+# The following is how we would represent the sample board configuration in question 1.
+# Start and End nodes will be treated as nodes as well, however they must be denoted with "start" and "end" where case is insensitive.
+# We will ignore spacing (any number of spaces will be accepted as a delimiter).
+
+      start a b* c d end # note that b has an asterisk beside it.
+start     0 1 0  0 0 0
+    a     1 0 1  0 0 1
+   b*     0 1 0  1 1 1
+    c     0 0 1  0 0 0 
+    d     0 0 1  0 0 1
+  end     0 1 1  0 1 0

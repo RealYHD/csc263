@@ -1,0 +1,28 @@
+\documentclass[12pt]{article}
+\usepackage{csc}
+
+\title{Problem Set 3: Question 1}
+\author{Monique and Harrison}
+
+\begin{document}
+\maketitle
+
+\section*{Part A}
+
+The algorithm employed will be a modified version of a depth first search for a graph. Scenarios 1 to 3 each have a generally similar structure where scenario 2 and 3 only requires slight adaptation from scenario 1 to satisfy their respective requirements.
+
+Scenario 1 asks that each location only be visited once, independent of it being a city or village. We begin by running a modified version of DFS where we start with a single node that is the start port. The first modification to the algorithm is, instead of never visiting a node again after it's been discovered, we will say that a node may be revisited as long as it isn't an ancestor of the current node. This means that each node may appear only once per route from leaf to starting node, however may appear multiple times in different routes from leaf to starting node. The next modification is to count how many leaves of the produced tree are the end nodes. Finally, we don't actually need to build a DFS tree, so we do not make use of the timing heuristic. We replace tracking the single parent with tracking all ancestral nodes required to get to the current node.
+
+We chose to use a adjacency matrix for rapid edge lookup 
+
+\section*{Part B}
+To represent board configurations, we will employ a text file where a modified adjacency matrix is represented. Continuous segments of space will be treated as delimiters. Each row in the text file will be interpreted as a row in the matrix, and each continuous segment of space will be interpreted as a break between columns. There should be the same number of continuous segments of white space in each row. The starting and ending node must be named "start" and "end" (case-insensitive) and cities will be represented by an asterisk beside the name of a location. Since the graph is undirected, we will assume there are no self loops and therefore, the diagonal in the matrix representing all edges to a node itself will be must be 0. Also due to the undirected nature of the input, the matrix is assumed to be mirrored diagonally. We will be ignoring the row headers as those are assumed to be the same and in the same order as the column headers. Specifically, we will be assuming the column header order, from left to right, will be the same as the order of the row headers, from top to bottom.
+
+Provided in the \verb|example_board.txt| file is an example of the input format desribed above representing the sample board configuration given.
+
+\section*{Part C}
+
+\section*{Part D}
+
+
+\end{document}
