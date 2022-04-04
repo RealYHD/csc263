@@ -70,22 +70,6 @@ def parse_input_mat(filepath) -> tuple[list[list[int]], list[str]]:
     return mat, header
 
 
-def flat2t1d(mat: list[list[int]]) -> list[int]:
-    res = []
-    for row in mat:
-        res.extend(row)
-    return res
-
-
-def gen_index_map(items: list) -> dict:
-    index = 0
-    result = {}
-    for item in items:
-        result[item] = index
-        index += 1
-    return result
-
-
 def gen_city_mask(headers: dict) -> list:
     keys = headers.keys()
     res = [0] * len(keys)
@@ -93,10 +77,6 @@ def gen_city_mask(headers: dict) -> list:
         if "*" in key:
             res[headers[key]] = 1
     return res
-
-
-def con2t1d(x: int, y: int, width: int, height: int) -> int:
-    return y * width + x
 
 
 def count_routes_1(adj_lst: list[list[int]], length: int, start, end) -> int:
