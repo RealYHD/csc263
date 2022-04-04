@@ -1,5 +1,4 @@
-      start a* b end
-start     0 1  0   0
-   a*     1 0  1   1
-    b     0 1  0   1
-  end     0 1  1   0
+start: a*
+   a*: start, b, end
+    b: a*, end
+  end: a*, b
