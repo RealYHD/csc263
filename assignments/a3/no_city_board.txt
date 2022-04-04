@@ -1,0 +1,5 @@
+start: a
+    a: start, b, c, end
+    b: a, c, end
+    c: a, b, end
+  end: a, b, c
